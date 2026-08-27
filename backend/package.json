@@ -12,11 +12,8 @@
   "license": "ISC",
   "type": "commonjs",
   "dependencies": {
-<<<<<<< HEAD
     "@google/generative-ai": "^0.24.1",
-=======
     "cloudinary": "^2.10.1",
->>>>>>> origin/main
     "cors": "^2.8.6",
     "dotenv": "^17.4.2",
     "express": "^5.2.1",

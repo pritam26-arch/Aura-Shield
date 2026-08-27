@@ -13,9 +13,12 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
+const aiRoutes = require('./routes/aiRoutes');
+
 // API Middlewares
+app.use('/api/ai', aiRoutes);
 app.use('/api/users', userRoutes); 
-app.use('/api/upload', uploadRoutes); 
+app.use('/api/upload', uploadRoutes);
 
 const server = http.createServer(app);
 
