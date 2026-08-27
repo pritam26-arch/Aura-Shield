@@ -12,6 +12,34 @@ export function UserProvider({ children }) {
   const [trips, setTrips] = useState([]);
   const [currentTrip, setCurrentTrip] = useState(null);
 
+  // --- Permission requests (used by Permissions setup screen AND Home) ---
+  const requestLocation = () => {
+    navigator.geolocation.getCurrentPosition(
+      () => setPermissions((p) => ({ ...p, location: true })),
+      () => setPermissions((p) => ({ ...p, location: false }))
+    );
+  };
+
+  const requestMic = () => {
+    navigator.mediaDevices
+      .getUserMedia({ audio: true })
+      .then(() => setPermissions((p) => ({ ...p, microphone: true })))
+      .catch(() => setPermissions((p) => ({ ...p, microphone: false })));
+  };
+
+  const requestMotion = () => {
+    if (typeof DeviceMotionEvent.requestPermission === "function") {
+      DeviceMotionEvent.requestPermission()
+        .then((result) =>
+          setPermissions((p) => ({ ...p, motion: result === "granted" }))
+        )
+        .catch(() => setPermissions((p) => ({ ...p, motion: false })));
+    } else {
+      setPermissions((p) => ({ ...p, motion: true }));
+    }
+  };
+
+  // --- Trips ---
   const startTrip = () => {
     const trip = {
       id: Date.now(),
@@ -57,6 +85,9 @@ export function UserProvider({ children }) {
         setContacts,
         permissions,
         setPermissions,
+        requestLocation,
+        requestMic,
+        requestMotion,
         trips,
         currentTrip,
         startTrip,

@@ -1,9 +1,8 @@
 import { Routes, Route, Navigate } from 'react-router-dom';
 import Login from './pages/Login.jsx';
 import SignUp from './pages/SignUp.jsx';
-import Home from './pages/Home.jsx';
-import Onboarding from './pages/Onboarding.jsx';
 import Permissions from './pages/Permissions.jsx';
+import Home from './pages/Home.jsx';
 import Settings from './pages/Settings.jsx';
 import SettingsContacts from './pages/SettingsContacts.jsx';
 import AddContact from './pages/AddContact.jsx';
@@ -19,9 +18,8 @@ function App() {
       <Route path="/" element={<Navigate to="/login" replace />} />
       <Route path="/login" element={<Login />} />
       <Route path="/signup" element={<SignUp />} />
+      <Route path="/permissions" element={<Permissions />} />
       <Route path="/home" element={<Home />} />
-      <Route path="/onboarding" element={<Onboarding />} />
-      <Route path="/onboarding/permissions" element={<Permissions />} />
       <Route path="/settings" element={<Settings />} />
       <Route path="/settings/contacts" element={<SettingsContacts />} />
       <Route path="/contacts/add" element={<AddContact />} />
