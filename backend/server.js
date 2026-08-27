@@ -11,12 +11,15 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
+const aiRoutes = require('./routes/aiRoutes');
+app.use('/api/ai', aiRoutes);
+
 const server = http.createServer(app);
 
 // Socket.io Setup
 const io = new Server(server, {
   cors: {
-    origin: "*", 
+    origin: "*",
     methods: ["GET", "POST"]
   }
 });
@@ -36,7 +39,7 @@ io.on('connection', (socket) => {
   // Jab frontend se SOS trigger hoga
   socket.on('trigger_sos', async (data) => {
     console.log("🚨 SOS TRIGGERED! Data:", data);
-    
+
     try {
       // 1. Database mein save karein (Evidence Locking)
       const newAlert = new Alert({
