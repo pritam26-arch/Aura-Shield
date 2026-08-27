@@ -9,6 +9,9 @@ import SettingsContacts from './pages/SettingsContacts.jsx';
 import AddContact from './pages/AddContact.jsx';
 import TripHistory from './pages/TripHistory.jsx';
 import TripDetail from './pages/TripDetail.jsx';
+import CommuteSetup from './pages/CommuteSetup.jsx';
+import CommuteActive from './pages/CommuteActive.jsx';
+import AlertFeed from './pages/dashboard/AlertFeed.jsx';
 
 function App() {
   return (
@@ -24,6 +27,9 @@ function App() {
       <Route path="/contacts/add" element={<AddContact />} />
       <Route path="/trips" element={<TripHistory />} />
       <Route path="/trips/:id" element={<TripDetail />} />
+      <Route path="/commute/setup" element={<CommuteSetup />} />
+      <Route path="/commute/active" element={<CommuteActive />} />
+      <Route path="/dashboard/feed" element={<AlertFeed />} />
     </Routes>
   );
 }
