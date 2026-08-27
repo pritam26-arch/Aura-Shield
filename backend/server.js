@@ -13,14 +13,9 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-<<<<<<< HEAD
-const aiRoutes = require('./routes/aiRoutes');
-app.use('/api/ai', aiRoutes);
-=======
 // API Middlewares
 app.use('/api/users', userRoutes); 
 app.use('/api/upload', uploadRoutes); 
->>>>>>> origin/main
 
 const server = http.createServer(app);
 
