@@ -5,14 +5,22 @@ const cors = require('cors');
 const mongoose = require('mongoose');
 require('dotenv').config();
 
-const Alert = require('./models/Alert'); // Humara naya model
+const Alert = require('./src/models/Alert'); 
+const userRoutes = require('./src/routes/userRoutes'); 
+const uploadRoutes = require('./src/routes/uploadRoutes'); // <-- NAYI LINE
 
 const app = express();
 app.use(cors());
 app.use(express.json());
 
+<<<<<<< HEAD
 const aiRoutes = require('./routes/aiRoutes');
 app.use('/api/ai', aiRoutes);
+=======
+// API Middlewares
+app.use('/api/users', userRoutes); 
+app.use('/api/upload', uploadRoutes); 
+>>>>>>> origin/main
 
 const server = http.createServer(app);
 
@@ -24,7 +32,7 @@ const io = new Server(server, {
   }
 });
 
-// MongoDB Connection (Fixed Error Here)
+// MongoDB Connection
 mongoose.connect(process.env.MONGO_URI)
   .then(() => {
     console.log("✅ MongoDB Connected Successfully!");
