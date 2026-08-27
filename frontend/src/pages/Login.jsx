@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 
 // Design intent: this is a night-commute safety app, so the login screen
 // borrows from that world — deep dusk-indigo background, a soft violet
@@ -129,9 +129,9 @@ export default function Login() {
 
         <p className="mt-6 text-center text-xs text-[#5B558F]">
           New here?{' '}
-          <a href="/onboarding" className="text-[#A9A3D9] hover:text-[#F4F2FF]">
+          <Link to="/signup" className="text-[#A9A3D9] hover:text-[#F4F2FF]">
             Set up your safety profile
-          </a>
+          </Link>
         </p>
       </div>
     </div>
