@@ -1,3 +1,4 @@
+import { useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { useUser } from "../context/UserContext";
 
@@ -10,7 +11,56 @@ function getGreeting() {
 
 export default function Home() {
   const navigate = useNavigate();
-  const { contacts, trips, permissions, currentTrip, startTrip } = useUser();
+  const {
+    contacts,
+    trips,
+    permissions,
+    requestLocation,
+    requestMic,
+    requestMotion,
+    currentTrip,
+    startTrip,
+  } = useUser();
+
+  const hasAskedRef = useRef(false);
+
+  // Ask for permissions one by one, automatically, the first time Home loads
+  useEffect(() => {
+    if (hasAskedRef.current) return;
+    hasAskedRef.current = true;
+
+    const askSequentially = async () => {
+      if (!permissions.location) {
+        await new Promise((resolve) => {
+          requestLocation();
+          setTimeout(resolve, 600); // small gap so popups don't overlap/collide
+        });
+      }
+      if (!permissions.microphone) {
+        await new Promise((resolve) => {
+          requestMic();
+          setTimeout(resolve, 600);
+        });
+      }
+      if (!permissions.motion) {
+        await new Promise((resolve) => {
+          requestMotion();
+          setTimeout(resolve, 600);
+        });
+      }
+    };
+
+    askSequentially();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const permissionRows = [
+    { key: "location", label: "Location", action: requestLocation },
+    { key: "microphone", label: "Mic", action: requestMic },
+    { key: "motion", label: "Motion", action: requestMotion },
+  ];
+
+  const allGranted = permissions.location && permissions.microphone && permissions.motion;
 
   return (
     <div className="min-h-screen bg-[#12102A] text-[#F4F2FF] flex justify-center">
@@ -64,40 +114,33 @@ export default function Home() {
           </span>
         </button>
 
-        {/* Permission status row */}
+        {/* Permission status row - clickable fallback if auto-popup was dismissed/blocked */}
         <div className="bg-[#1E1B3A] border border-[#302B57] rounded-2xl p-4 mb-6">
           <p className="text-xs text-[#A79DE0] mb-2">Monitoring readiness</p>
-          <div className="flex items-center gap-4">
-            <div className="flex items-center gap-1.5">
-              <span className={permissions.location ? "text-green-400" : "text-[#7B72A8]"}>
-                {permissions.location ? "✓" : "○"}
-              </span>
-              <span className="text-xs text-[#F4F2FF]">Location</span>
-            </div>
-            <div className="flex items-center gap-1.5">
-              <span className={permissions.microphone ? "text-green-400" : "text-[#7B72A8]"}>
-                {permissions.microphone ? "✓" : "○"}
-              </span>
-              <span className="text-xs text-[#F4F2FF]">Mic</span>
-            </div>
-            <div className="flex items-center gap-1.5">
-              <span className={permissions.motion ? "text-green-400" : "text-[#7B72A8]"}>
-                {permissions.motion ? "✓" : "○"}
-              </span>
-              <span className="text-xs text-[#F4F2FF]">Motion</span>
-            </div>
+          <div className="flex items-center gap-2">
+            {permissionRows.map((row) => (
+              <button
+                key={row.key}
+                onClick={() => !permissions[row.key] && row.action()}
+                className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-full text-xs font-medium transition ${
+                  permissions[row.key]
+                    ? "bg-green-500/10 text-green-400"
+                    : "bg-red-500/10 text-red-400 active:bg-red-500/20"
+                }`}
+              >
+                <span>{permissions[row.key] ? "✓" : "○"}</span>
+                <span>{row.label}</span>
+              </button>
+            ))}
           </div>
-          {!(permissions.location && permissions.microphone && permissions.motion) && (
-            <button
-              onClick={() => navigate("/onboarding/permissions")}
-              className="text-xs text-red-400 font-medium mt-2"
-            >
-              Fix permissions →
-            </button>
+          {!allGranted && (
+            <p className="text-xs text-[#7B72A8] mt-2">
+              Tap a permission above if it was missed
+            </p>
           )}
         </div>
 
-        {/* Main CTA - pushed toward center/bottom for thumb reach */}
+        {/* Main CTA */}
         <div className="flex-1 flex flex-col items-center justify-center">
           <button
             onClick={() => {
@@ -113,7 +156,6 @@ export default function Home() {
             We'll silently monitor your safety until you're home
           </p>
 
-          {/* Emergency call shortcut */}
           <a
             href="tel:100"
             className="mt-5 text-xs bg-[#1E1B3A] border border-[#302B57] text-[#F4F2FF] px-4 py-2 rounded-full font-medium flex items-center gap-1.5"
